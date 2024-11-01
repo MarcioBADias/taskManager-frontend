@@ -25,7 +25,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Gerenciador de Tarefas</h1>
+      <h1 style={{ marginTop: '1rem' }}>Gerenciador de Tarefas</h1>
       <TaskForm onTaskAdded={handleTaskAdded} />
       <TaskList tasks={tasks} setTasks={setTasks} />
       <GlobalStyles />
