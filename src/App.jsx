@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import TaskForm from './components/TaskForm'
+import { TaskForm } from './components/TaskForm'
 import { TaskList } from './components/TaskList'
+import { Spinner } from './components/Spinner'
 import { GlobalStyles } from './globalStyles'
 
 const App = () => {
   const [tasks, setTasks] = useState([])
+  const [loading, setLoading] = useState(true)
 
   const fetchTasks = async () => {
+    setLoading(true)
     try {
       const response = await fetch(
         'https://taskmanager-backend-vh5d.onrender.com/tasks',
@@ -16,6 +19,8 @@ const App = () => {
       setTasks(orderedData)
     } catch (error) {
       console.error('Erro ao carregar as tarefas:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -53,8 +58,14 @@ const App = () => {
   return (
     <div>
       <h1 style={{ marginTop: '1rem' }}>Gerenciador de Tarefas</h1>
-      <TaskForm onTaskAdded={handleTaskAdded} />
-      <TaskList tasks={tasks} setTasks={setTasks} />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <TaskForm onTaskAdded={handleTaskAdded} />
+          <TaskList tasks={tasks} setTasks={setTasks} />
+        </>
+      )}
       <GlobalStyles />
     </div>
   )
