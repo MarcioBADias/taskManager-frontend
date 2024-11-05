@@ -24,16 +24,12 @@ const TaskList = ({ tasks, setTasks }) => {
   }
 
   const handleDelete = async (taskId) => {
-    try {
+    if (window.confirm('Tem certeza que deseja excluir esta tarefa?')) {
       await fetch(
         `https://taskmanager-backend-vh5d.onrender.com/tasks/${taskId}`,
-        {
-          method: 'DELETE',
-        },
+        { method: 'DELETE' },
       )
-      setTasks(tasks.filter((task) => task._id !== taskId))
-    } catch (error) {
-      console.error('Erro ao deletar a tarefa:', error)
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId))
     }
   }
 
