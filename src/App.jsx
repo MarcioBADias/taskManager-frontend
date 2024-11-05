@@ -7,20 +7,47 @@ const App = () => {
   const [tasks, setTasks] = useState([])
 
   const fetchTasks = async () => {
-    const response = await fetch(
-      'https://taskmanager-backend-vh5d.onrender.com/tasks',
-    )
-    const data = await response.json()
-    const orderedData = data.sort((a, b) => a.order - b.order)
-    setTasks(orderedData)
+    try {
+      const response = await fetch(
+        'https://taskmanager-backend-vh5d.onrender.com/tasks',
+      )
+      const data = await response.json()
+      const orderedData = data.sort((a, b) => a.order - b.order)
+      setTasks(orderedData)
+    } catch (error) {
+      console.error('Erro ao carregar as tarefas:', error)
+    }
   }
 
   useEffect(() => {
     fetchTasks()
   }, [])
 
-  const handleTaskAdded = (newTask) => {
+  const handleTaskAdded = async (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask])
+
+    try {
+      const response = await fetch(
+        'https://taskmanager-backend-vh5d.onrender.com/tasks',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newTask),
+        },
+      )
+      if (response.ok) {
+        const addedTask = await response.json()
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task._id === newTask._id ? addedTask : task,
+          ),
+        )
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar a tarefa:', error)
+    }
   }
 
   return (
