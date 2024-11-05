@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   RiEditBoxFill,
   RiDeleteBack2Fill,
@@ -86,24 +86,73 @@ const TaskList = ({ tasks, setTasks }) => {
     }
   }
 
-  const handleMoveUp = (index) => {
+  const fetchTasks = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch(
+        'https://taskmanager-backend-vh5d.onrender.com/tasks',
+      )
+      const data = await response.json()
+      const orderedData = data.sort((a, b) => a.order - b.order)
+      setTasks(orderedData)
+    } catch (error) {
+      console.error('Erro ao carregar tarefas:', error)
+    }
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    fetchTasks()
+  }, [])
+
+  const handleMoveUp = async (index) => {
     if (index === 0) return
     const newTasks = [...tasks]
+
     ;[newTasks[index - 1], newTasks[index]] = [
       newTasks[index],
       newTasks[index - 1],
     ]
-    setTasks(newTasks)
+
+    const tasksWithUpdatedOrder = newTasks.map((task, idx) => ({
+      ...task,
+      order: idx,
+    }))
+
+    setTasks(tasksWithUpdatedOrder)
+
+    await fetch('https://taskmanager-backend-vh5d.onrender.com/tasks/reorder', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tasks: tasksWithUpdatedOrder }),
+    })
   }
 
-  const handleMoveDown = (index) => {
+  const handleMoveDown = async (index) => {
     if (index === tasks.length - 1) return
     const newTasks = [...tasks]
+
     ;[newTasks[index], newTasks[index + 1]] = [
       newTasks[index + 1],
       newTasks[index],
     ]
-    setTasks(newTasks)
+
+    const tasksWithUpdatedOrder = newTasks.map((task, idx) => ({
+      ...task,
+      order: idx,
+    }))
+
+    setTasks(tasksWithUpdatedOrder)
+
+    await fetch('https://taskmanager-backend-vh5d.onrender.com/tasks/reorder', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tasks: tasksWithUpdatedOrder }),
+    })
   }
 
   const handleDragEnd = async (result) => {
@@ -113,17 +162,21 @@ const TaskList = ({ tasks, setTasks }) => {
     const [removed] = reorderedTasks.splice(result.source.index, 1)
     reorderedTasks.splice(result.destination.index, 0, removed)
 
-    setTasks(reorderedTasks)
+    const tasksWithUpdatedOrder = reorderedTasks.map((task, index) => ({
+      ...task,
+      order: index,
+    }))
+
+    setTasks(tasksWithUpdatedOrder)
 
     await fetch('https://taskmanager-backend-vh5d.onrender.com/tasks/reorder', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ tasks: reorderedTasks }),
+      body: JSON.stringify({ tasks: tasksWithUpdatedOrder }),
     })
   }
-
   return (
     <S.ListContainer>
       <h2>Lista de Tarefas</h2>
