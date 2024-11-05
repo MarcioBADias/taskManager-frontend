@@ -25,9 +25,12 @@ const TaskList = ({ tasks, setTasks }) => {
 
   const handleDelete = async (taskId) => {
     try {
-      await fetch(`https://taskmanager-backend-vh5d.onrender.com/tasks/${taskId}`, {
-        method: 'DELETE',
-      })
+      await fetch(
+        `https://taskmanager-backend-vh5d.onrender.com/tasks/${taskId}`,
+        {
+          method: 'DELETE',
+        },
+      )
       setTasks(tasks.filter((task) => task._id !== taskId))
     } catch (error) {
       console.error('Erro ao deletar a tarefa:', error)
@@ -176,8 +179,8 @@ const TaskList = ({ tasks, setTasks }) => {
                       ) : (
                         <>
                           <RiEditBoxFill onClick={() => handleEdit(task)} />
-                          {task.name} - R$ {task.cost} -{' '}
-                          {formatDate(task.deadline)}
+                          ID: {task._id.slice(0, 7)} - {task.name} - R${' '}
+                          {task.cost} - {formatDate(task.deadline)}
                           <RiDeleteBack2Fill
                             onClick={() => handleDelete(task._id)}
                           />
