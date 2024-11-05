@@ -19,7 +19,7 @@ const TaskList = ({ tasks, setTasks }) => {
   const formatDate = (date) => {
     const dateObj = new Date(date)
     return !isNaN(dateObj.getTime())
-      ? dateObj.toLocaleDateString('pt-BR')
+      ? dateObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' })
       : 'Data inválida'
   }
 
@@ -38,7 +38,12 @@ const TaskList = ({ tasks, setTasks }) => {
     setEditedName(task.name)
     setEditedCost(task.cost)
     setEditedDeadline(
-      task.deadline ? new Date(task.deadline).toISOString().slice(0, 10) : '',
+      task.deadline
+        ? new Date(task.deadline)
+            .toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+            .toISOString()
+            .slice(0, 10)
+        : '',
     )
   }
 
