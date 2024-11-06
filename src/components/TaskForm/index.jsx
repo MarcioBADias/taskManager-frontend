@@ -9,7 +9,7 @@ const TaskForm = ({ onTaskAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const newTask = { name, cost, deadline }
+    const newTask = { name: name.toLowerCase(), cost, deadline }
 
     const response = await fetch(
       'https://taskmanager-backend-vh5d.onrender.com/tasks',

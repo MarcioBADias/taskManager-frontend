@@ -242,8 +242,11 @@ const TaskList = ({ tasks, setTasks }) => {
                       ) : (
                         <>
                           <RiEditBoxFill onClick={() => handleEdit(task)} />
-                          ID: {task._id.slice(0, 7)} - {task.name} - R${' '}
-                          {task.cost} - {formatDate(task.deadline)}
+                          ID: {task._id.slice(0, 7)} -{' '}
+                          {task.name.length > 35
+                            ? `${task.name.slice(0, 16)} ...`
+                            : task.name}{' '}
+                          - R$ {task.cost} - {formatDate(task.deadline)}
                           <RiDeleteBack2Fill
                             onClick={() => handleDelete(task._id)}
                           />
