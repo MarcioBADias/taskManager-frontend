@@ -206,10 +206,16 @@ const TaskList = ({ tasks, setTasks }) => {
                             />
                             <S.ListInput
                               type="number"
+                              max="999999999999"
                               step="0.01"
                               value={editedCost}
                               onChange={(e) =>
-                                setEditedCost(parseFloat(e.target.value))
+                                setEditedCost(
+                                  Math.min(
+                                    999999999999,
+                                    parseFloat(e.target.value),
+                                  ),
+                                )
                               }
                               required
                             />

@@ -48,6 +48,7 @@ const TaskForm = ({ onTaskAdded }) => {
         <S.StyledInput
           type="number"
           placeholder="Custo (R$)"
+          max="999999999999"
           value={cost}
           onChange={(e) => setCost(e.target.value)}
           required
