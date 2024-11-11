@@ -40,9 +40,8 @@ const TaskList = ({ tasks, setTasks }) => {
     setEditedDeadline(
       task.deadline
         ? new Date(task.deadline)
-            .toLocaleDateString('pt-BR', { timeZone: 'UTC' })
-            .toISOString()
-            .slice(0, 10)
+            .toISOString('pt-BR', { timeZone: 'UTC' })
+            .split('T')[0]
         : '',
     )
   }
@@ -81,7 +80,7 @@ const TaskList = ({ tasks, setTasks }) => {
         prevTasks.map((task) => (task._id === taskData._id ? taskData : task)),
       )
       setEditingTask(null)
-      setErrorPopup('') // Limpar mensagem de erro ao sucesso
+      setErrorPopup('')
     } catch (error) {
       console.error('Erro ao atualizar a tarefa:', error)
     }
